@@ -550,6 +550,99 @@ img { max-width: 100%; display: block; }
   .kit-marquee, .sk-nudge { animation: none; }
 }
 
+/* =========================================================================
+   07 ОРГСТРУКТУРА — встроенная схема (сохраняет собственный тёмный дизайн
+   черновика-артефакта). Всё скопировано под .os, чтобы общие классы
+   (.wrap, .node, .detail…) не утекали на остальной сайт. h1–h4 уже
+   JetBrains Mono глобально — отдельного переопределения не нужно.
+   ========================================================================= */
+.os { --line-dark: rgba(255, 255, 255, 0.14); padding: 8px 0 72px; }
+
+.os .wrap { width: 100%; max-width: 2200px; margin: 0 auto; padding-left: 24px; padding-right: 24px; }
+@media (min-width: 768px) { .os .wrap { padding-left: 64px; padding-right: 64px; } }
+
+.os .chart-layout { display: flex; flex-direction: column; gap: 28px; }
+@media (min-width: 1280px) { .os .chart-layout { flex-direction: row; align-items: flex-start; gap: 28px; } }
+
+.os .chart-scroll-outer { flex: 1 1 auto; min-width: 0; }
+.os .chart-scroll { overflow-x: auto; padding: 4px 4px 12px; }
+
+/* recursive tree: node -> stem -> fan (row of children), fan-child may
+   itself be a branch-node with its own stem+fan. No percentage math —
+   flexbox auto-sizes every level, so uneven branch widths (Brand &
+   Communication Lead is much wider than CRM-менеджер or PMM Lead) just work. */
+.os .branch-node { display: inline-flex; flex-direction: column; align-items: center; }
+.os .dir-trio { display: flex; gap: 10px; justify-content: center; align-items: flex-start; }
+.os .stem { width: 1px; height: 22px; background: var(--line-dark); flex: none; }
+.os .stem.sm { height: 16px; }
+.os .fan { position: relative; display: flex; justify-content: center; align-items: flex-start; gap: 13px; padding-top: 22px; }
+.os .fan.sm { gap: 7px; padding-top: 16px; }
+
+/* Bus line: each child draws only the segment from its own center out to the
+   midpoint of the gap toward its neighbor(s) — never a container-wide line —
+   so the bus starts exactly at the first child's center and ends exactly at
+   the last child's, instead of overshooting to the row's outer edges. */
+.os .fan-child { position: relative; display: inline-flex; flex-direction: column; align-items: center; }
+.os .fan-child::before { content: ""; position: absolute; top: -22px; left: -6.5px; right: -6.5px; height: 1px; background: var(--line-dark); }
+.os .fan-child:first-child::before { left: 50%; }
+.os .fan-child:last-child::before { right: 50%; }
+.os .fan-child::after { content: ""; position: absolute; left: 50%; top: -22px; width: 1px; height: 22px; background: var(--line-dark); }
+.os .fan.sm > .fan-child::before { top: -16px; left: -3.5px; right: -3.5px; }
+.os .fan.sm > .fan-child:first-child::before { left: 50%; }
+.os .fan.sm > .fan-child:last-child::before { right: 50%; }
+.os .fan.sm > .fan-child::after { top: -16px; height: 16px; }
+
+.os .node {
+  width: max-content; max-width: 184px;
+  border: 1px solid var(--line-dark);
+  background: var(--coal);
+  padding: 13px 13px 12px;
+  cursor: pointer;
+  text-align: left;
+  white-space: normal;
+  transition: border-color .2s ease, background .2s ease, transform .2s var(--ease-out);
+  font-family: inherit; color: inherit;
+}
+.os .node:hover { border-color: rgba(255,255,255,.32); transform: translateY(-2px); }
+.os .node:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
+.os .node.active { border-color: var(--orange); background: #1f1a15; }
+.os .node .role { font-family: "JetBrains Mono", monospace; font-size: 12px; letter-spacing: .02em; text-transform: uppercase; line-height: 1.28; color: #fff; overflow-wrap: break-word; word-break: break-word; }
+.os .node.core { background: #241a10; border-color: var(--orange); max-width: 210px; }
+.os .node.core .role { font-size: 13.5px; }
+.os .node.top { background: transparent; border-color: var(--line-dark); max-width: 210px; }
+.os .node.top .role { color: rgba(255,255,255,.72); }
+.os .node.sub { padding: 10px 11px 9px; max-width: 138px; }
+.os .node.sub .role { font-size: 11px; }
+.os .node.sub2 { padding: 8px 9px 7px; max-width: 104px; }
+.os .node.sub2 .role { font-size: 10px; }
+
+.os .scroll-hint { display: none; font-family: "JetBrains Mono", monospace; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.4); margin-bottom: 12px; }
+@media (max-width: 2050px) { .os .scroll-hint { display: block; } }
+
+.os .detail {
+  flex: none; width: 100%;
+  border: 1px solid var(--line-dark); background: var(--coal); padding: 26px 24px;
+  align-self: flex-start;
+}
+@media (min-width: 1280px) { .os .detail { width: 280px; position: sticky; top: 84px; } }
+.os .detail h3 { font-size: 19px; color: #fff; }
+.os .detail .d-decode { margin-top: 4px; font-family: "Onest", sans-serif; font-size: 12.5px; font-weight: 400; text-transform: none; letter-spacing: 0; color: rgba(255,255,255,.44); line-height: 1.4; }
+.os .detail .d-decode:empty { display: none; }
+.os .detail .d-line:empty { display: none; margin-top: 0; }
+.os .detail .d-line { margin-top: 10px; font-size: 13px; color: rgba(255,255,255,.5); }
+.os .detail .d-line b { color: rgba(255,255,255,.75); font-weight: 500; }
+.os .detail .d-funcs { list-style: none; margin-top: 20px; display: grid; gap: 10px; }
+.os .detail .d-funcs li { position: relative; padding-left: 16px; font-size: 14.5px; line-height: 1.5; color: rgba(255,255,255,.78); }
+.os .detail .d-funcs li::before { content: ""; position: absolute; left: 0; top: 9px; width: 6px; height: 1px; background: var(--orange); }
+
+.os .callout { margin-top: 44px; padding: 26px 24px; border: 1px dashed rgba(255,90,0,.35); }
+.os .callout .lbl { font-family: "JetBrains Mono", monospace; font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--orange); display: block; margin-bottom: 18px; }
+.os .callout-grid { display: grid; gap: 20px; }
+@media (min-width: 700px) { .os .callout-grid { grid-template-columns: repeat(3, 1fr); } }
+.os .callout-grid .num { font-family: "JetBrains Mono", monospace; color: var(--orange); font-size: 11px; display: block; margin-bottom: 6px; }
+.os .callout-grid h4 { font-size: 13.5px; color: #fff; }
+.os .callout-grid p { margin-top: 6px; font-size: 13.5px; line-height: 1.55; color: rgba(255,255,255,.6); }
+
 </style>
 </head>
 <body class="antialiased">
@@ -568,6 +661,7 @@ img { max-width: 100%; display: block; }
       <a href="#directions" class="nav-link">04 Направления</a>
       <a href="#goals" class="nav-link">05 Цели</a>
       <a href="#functions" class="nav-link">06 Функции</a>
+      <a href="#orgstructure" class="nav-link">07 Оргструктура</a>
     </nav>
     <button class="nav-menu-btn" id="mobileNavOpen" aria-label="Открыть меню" aria-expanded="false">
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M2 5h14M2 9h14M2 13h14" stroke="currentColor" stroke-width="1.5"/></svg>
@@ -591,6 +685,7 @@ img { max-width: 100%; display: block; }
       <a href="#directions">04 Направления</a>
       <a href="#goals">05 Цели и задачи</a>
       <a href="#functions">06 Функции отдела</a>
+      <a href="#orgstructure">07 Оргструктура</a>
     </nav>
   </aside>
 </div>
@@ -1203,7 +1298,154 @@ img { max-width: 100%; display: block; }
     <div class="next-teaser reveal">
       <div>
         <span class="lbl">Дальше — оргструктура</span>
-        <p>Кто именно закрывает роли в каждом контуре — агентство, внутренний менеджер, аутсорс или коммерческий директор — обсуждается отдельно и будет зафиксирован следующим шагом, после согласования с компанией.</p>
+        <p>Кто именно закрывает роли в каждом контуре — агентство, внутренний менеджер, аутсорс или коммерческий директор — зафиксировано в разделе 07 ниже: роли, подчинение и зоны ответственности.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 07 ОРГСТРУКТУРА ============ -->
+<section class="section section-dark" id="orgstructure">
+  <div class="container-x">
+    <div class="section-head reveal">
+      <div class="section-head-row">
+        <span class="section-head-idx">07</span>
+        <span class="section-head-mark">STRUKTURA<span style="font-size:9px; vertical-align:super;">+</span></span>
+      </div>
+      <h2>Оргструктура</h2>
+      <p class="section-lede">Роли и подчинение внутри отдела маркетинга. Кликните роль в схеме, чтобы увидеть, что конкретно она делает.</p>
+    </div>
+  </div>
+
+  <div class="os">
+    <div class="wrap chart-layout">
+      <div class="chart-scroll-outer">
+        <span class="scroll-hint">← схема шире экрана, прокрутите →</span>
+        <div class="chart-scroll">
+        <div class="branch-node" id="tree">
+
+          <div class="dir-trio">
+            <button class="node top" data-role="techdir"><span class="role">Технический директор</span></button>
+            <button class="node top" data-role="kd"><span class="role">Коммерческий директор</span></button>
+            <button class="node top" data-role="opdir"><span class="role">Операционный директор</span></button>
+          </div>
+          <div class="stem"></div>
+          <div class="fan">
+            <div class="fan-child branch-node">
+
+                  <button class="node core" data-role="cmo"><span class="role">CMO</span></button>
+                  <div class="stem"></div>
+                  <div class="fan">
+
+                    <!-- Brand & Communication Lead -->
+                    <div class="fan-child branch-node">
+                      <button class="node" data-role="brandlead"><span class="role">Brand &amp; Communication Lead</span></button>
+                      <div class="stem"></div>
+                      <div class="fan">
+
+                        <!-- ABM -->
+                        <div class="fan-child branch-node">
+                          <button class="node sub" data-role="abm"><span class="role">ABM</span></button>
+                          <div class="stem sm"></div>
+                          <div class="fan sm">
+                            <div class="fan-child"><button class="node sub2" data-role="osint"><span class="role">OSINT</span></button></div>
+                          </div>
+                        </div>
+
+                        <!-- Content Director -->
+                        <div class="fan-child branch-node">
+                          <button class="node sub" data-role="contentdir"><span class="role">Content Director</span></button>
+                          <div class="stem sm"></div>
+                          <div class="fan sm">
+                            <div class="fan-child"><button class="node sub2" data-role="copywriter"><span class="role">Копирайтер / Tech Writer</span></button></div>
+                            <div class="fan-child"><button class="node sub2" data-role="designer"><span class="role">Дизайнер</span></button></div>
+                            <div class="fan-child"><button class="node sub2" data-role="webmaster"><span class="role">Web Master</span></button></div>
+                          </div>
+                        </div>
+
+                        <!-- PR -->
+                        <div class="fan-child branch-node">
+                          <button class="node sub" data-role="pr"><span class="role">PR</span></button>
+                          <div class="stem sm"></div>
+                          <div class="fan sm">
+                            <div class="fan-child"><button class="node sub2" data-role="eventmgr"><span class="role">Event Manager</span></button></div>
+                          </div>
+                        </div>
+
+                        <div class="fan-child"><button class="node sub" data-role="smm"><span class="role">SMM</span></button></div>
+                        <div class="fan-child"><button class="node sub" data-role="mediabuyer"><span class="role">Media Buyer</span></button></div>
+                      </div>
+                    </div>
+
+                    <!-- CRM-менеджер -->
+                    <div class="fan-child branch-node">
+                      <button class="node" data-role="crmmgr"><span class="role">CRM-менеджер</span></button>
+                      <div class="stem"></div>
+                      <div class="fan">
+                        <div class="fan-child"><button class="node sub" data-role="dataanalyst"><span class="role">Data Analyst</span></button></div>
+                        <div class="fan-child"><button class="node sub" data-role="datamgr"><span class="role">Менеджер по проектным данным</span></button></div>
+                      </div>
+                    </div>
+
+                    <!-- PMM Lead -->
+                    <div class="fan-child branch-node">
+                      <button class="node" data-role="pmmlead"><span class="role">PMM Lead</span></button>
+                      <div class="stem"></div>
+                      <div class="fan">
+                        <div class="fan-child"><button class="node sub" data-role="productmgr"><span class="role">Product Manager</span></button></div>
+
+                        <div class="fan-child branch-node">
+                          <button class="node sub" data-role="growthmgr"><span class="role">Growth Manager</span></button>
+                          <div class="stem sm"></div>
+                          <div class="fan sm">
+                            <div class="fan-child"><button class="node sub2" data-role="webmasterprod"><span class="role">Web Master</span></button></div>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+        </div>
+        </div>
+      </div>
+
+      <aside class="detail" id="detail">
+        <h3 id="dName">CMO</h3>
+        <p class="d-decode" id="dDecode">Chief Marketing Officer — директор по маркетингу</p>
+        <p class="d-line" id="dReports"><b>Подчиняется:</b> коммерческому директору</p>
+        <ul class="d-funcs" id="dFuncs"></ul>
+      </aside>
+    </div>
+
+    <div class="wrap">
+      <div class="callout">
+        <span class="lbl">разовые проекты на старте</span>
+        <div class="callout-grid">
+          <div>
+            <span class="num">01</span>
+            <h4>Архив → банк кейсов</h4>
+            <p>Менеджер по проектным данным упаковывает архив из 30 старых проектов, Content Director разбирает его и упаковывает 8–12 сильнейших в готовые кейсы — контент на первые месяцы.</p>
+          </div>
+          <div>
+            <span class="num">02</span>
+            <h4>Настройка CRM и воронок</h4>
+            <p>CRM-менеджер настраивает CRM, поля под проектные данные и воронки с нуля — до начала регулярной работы.</p>
+          </div>
+          <div>
+            <span class="num">03</span>
+            <h4>Настройка базы</h4>
+            <p>Необходимо выбрать CRM и настроить базу.</p>
+          </div>
+          <div>
+            <span class="num">04</span>
+            <h4>Первые продуктовые гипотезы</h4>
+            <p>Прежде чем технически запускать продуктовое направление, нужно запустить работу PMM Lead и сформировать первые продуктовые гипотезы.</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1241,7 +1483,7 @@ img { max-width: 100%; display: block; }
     </div>
     <div class="footer-bottom">
       <span>© 2026 STRUKTURA+ · Логика построения отдела маркетинга</span>
-      <span>Оргструктура и роли — следующий этап</span>
+      <span>Оргструктура и роли — раздел 07</span>
     </div>
   </div>
 </footer>
@@ -1328,6 +1570,287 @@ img { max-width: 100%; display: block; }
   window.addEventListener("keydown", function (e) {
     if (e.key === "Escape") closeMobileNav();
   });
+
+  // ---- 07 Оргструктура ----
+  var ROLES = {
+    techdir: {
+      name: "Технический директор",
+      reports: "",
+      functions: ["Отвечает за производство и инженерные команды"]
+    },
+    kd: {
+      name: "Коммерческий директор",
+      reports: "",
+      functions: [
+        "Ведёт работу со всеми ролями ЛПРов и ЛВРов действующими в проекте",
+        "Тендерные переговоры и сеть источников",
+        "Точка прямой коммуникации с рынком",
+        "CMO подчиняется ему",
+        "Ставит задачи маркетингу и принимает результат"
+      ]
+    },
+    opdir: {
+      name: "Операционный директор",
+      reports: "",
+      functions: ["Отвечает за операционную деятельность компании"]
+    },
+    cmo: {
+      name: "CMO",
+      decode: "Chief Marketing Officer — директор по маркетингу",
+      reports: "Коммерческому директору",
+      functions: [
+        "Стратегия и приоритеты отдела маркетинга",
+        "Курирует Brand & Communication Lead, CRM-менеджера и PMM Lead",
+        "Отчитывается перед коммерческим директором",
+        "Структурирует и сопровождает тендерный и продуктовый сценарии продаж на уровне маркетинга"
+      ]
+    },
+    brandlead: {
+      name: "Brand & Communication Lead",
+      decode: "руководитель направления бренда и коммуникаций",
+      reports: "CMO",
+      functions: [
+        "Формирует смыслы компании: позиционирование, УТП, ключевые сообщения, доказательства экспертности, аргументы и ценностные предложения",
+        "Брендменеджмент",
+        "Отвечает за личный бренд экспертов компании",
+        "Распределяет бюджет коммуникаций между направлениями",
+        "Ставит задачи и принимает результат у ABM, Content Director, PR, SMM, Media Buyer",
+        "Задаёт единый стандарт подготовки материалов для сделок (КП, кейс-паки, презентации)",
+        "HR-бренд: карьерные истории, вакансии, привлечение специалистов в отдел",
+        "Согласование медиаплана и контент-стратегии компании"
+      ]
+    },
+    abm: {
+      name: "ABM",
+      decode: "Account-Based Marketing — маркетинг по целевым аккаунтам",
+      reports: "Brand & Communication Lead",
+      functions: [
+        "Определяет ключевые целевые аккаунты: архитекторы, девелоперы, генподрядчики",
+        "Строит стратегию выхода на конкретные аккаунты",
+        "Строит сценарии поддержания регулярной связи с ценными контактами из базы для коммерческого директора",
+        "Ставит задачи OSINT",
+        "Формирует карту участников целевых проектов и готовит информацию для входа",
+        "Подготовка материалов для тендеров и под задачи коммерческого отдела"
+      ]
+    },
+    pr: {
+      name: "PR",
+      decode: "Public Relations — связи с общественностью",
+      reports: "Brand & Communication Lead",
+      functions: [
+        "Профильные и деловые медиа",
+        "Антикризисный PR",
+        "Экспертные комментарии, авторские колонки",
+        "Инфоповоды и исследования",
+        "Развивает личный бренд экспертов компании: выступления, интервью, авторские материалы",
+        "Медиапланирование для PR-размещений"
+      ]
+    },
+    eventmgr: {
+      name: "Event Manager",
+      decode: "менеджер по мероприятиям",
+      reports: "PR",
+      functions: ["Отраслевые события", "Организация, участие", "Партнёрские форматы", "План мероприятий"]
+    },
+    osint: {
+      name: "OSINT",
+      decode: "Open Source Intelligence — разведка по открытым источникам",
+      reports: "ABM",
+      functions: [
+        "Сбор открытой информации по целевым аккаунтам и регионам",
+        "Мониторинг конкурентов и рынка",
+        "Мониторинг тендерных площадок и отраслевой информационной повестки (публичные источники)",
+        "Готовит инструменты анализа конкурентной среды к переговорам и тендерам"
+      ]
+    },
+    contentdir: {
+      name: "Content Director",
+      decode: "руководитель контента",
+      reports: "Brand & Communication Lead",
+      functions: [
+        "Общая сборка медиа плана и контент стратегии: что и когда выходит по каналам",
+        "Арт-дирекшен",
+        "Контроль качества и tone of voice у команды",
+        "Ставит задачи Копирайтеру/Tech Writer, Дизайнеру и Web Master",
+        "Ведёт библиотеку маркетинговых материалов (тексты, визуал, кейсы) для тендеров и КП",
+        "Ведёт регулярный, а не только разовый сбор и оформление кейсов"
+      ]
+    },
+    copywriter: {
+      name: "Копирайтер / Tech Writer",
+      decode: "технический писатель",
+      reports: "Content Director",
+      functions: [
+        "Тексты для публикаций, лендингов, соцсетей",
+        "Техническая документация: регламенты, описания решений",
+        "Готовит тексты для кейс-паков, презентаций и КП под конкретные тендеры",
+        "Разрабатывает специализированные коммерческие материалы под разные сценарии продаж"
+      ]
+    },
+    designer: {
+      name: "Дизайнер",
+      reports: "Content Director",
+      functions: [
+        "Визуальная упаковка: презентации, соцсети, лендинги",
+        "Банк визуальных заготовок: кейсы, экспертизы, типовые проекты",
+        "Готовит визуал для кейс-паков, презентаций и КП под конкретные тендеры",
+        "Видео и мультимедийный контент"
+      ]
+    },
+    webmaster: {
+      name: "Web Master",
+      decode: "веб-мастер (сайт и бренд-лендинги)",
+      reports: "Content Director",
+      functions: ["Сайт, лендинги, техническое SEO", "Веб-аналитика и конверсии"]
+    },
+    smm: {
+      name: "SMM",
+      decode: "Social Media Marketing — маркетинг в соцсетях",
+      reports: "Brand & Communication Lead",
+      functions: [
+        "Ведение соцсетей и мессенджеров",
+        "Контент-план и публикации без пауз",
+        "Комьюнити-менеджмент",
+        "Медиапланирование и контент-стратегия для соцсетей"
+      ]
+    },
+    mediabuyer: {
+      name: "Media Buyer",
+      decode: "специалист по закупке рекламы",
+      reports: "Brand & Communication Lead",
+      functions: [
+        "Настройка и ведение платного трафика на охват/бренд",
+        "Таргетинг на архитекторов и девелоперов",
+        "Оптимизация бюджета по каналам"
+      ]
+    },
+    crmmgr: {
+      name: "CRM-менеджер",
+      decode: "Customer Relationship Management — управление данными и воронками клиентов",
+      reports: "CMO",
+      functions: [
+        "Владеет CRM-системой: настройка, поля, права доступа",
+        "CRM как единая система с сущностями: тендерные проекты, продукты, контакты",
+        "Отвечает за качество и полноту данных",
+        "Email/CRM-рассылки",
+        "Систематизирует данные о сети источников (архитекторы, генподрядчики, заказчики, консультанты)",
+        "Готовит инфраструктуру работы с базой: рассылки, напоминания, реферальные материалы и скрипты",
+        "Автоматизирует данные для подготовки типовых коммерческих материалов через CRM и шаблоны",
+        "Ставит задачи Data Analyst, принимает данные от Менеджера по проектным данным"
+      ]
+    },
+    dataanalyst: {
+      name: "Data Analyst",
+      decode: "аналитик данных",
+      reports: "CRM-менеджеру",
+      functions: [
+        "Анализ и аудит данных по маркетингу",
+        "Дэшборды и отчётность",
+        "Метрики эффективности каналов",
+        "Аналитика по тендерам: воронка, конверсия, причины побед и поражений",
+        "Аналитика по продуктам: воронка, юнит-экономика, статус портфеля гипотез",
+        "Аналитика по коммуникациям: охваты, упоминания, динамика узнаваемости бренда",
+        "Сводит метрики всех контуров в единую отчётность и KPI, автоматизирует работу с данными"
+      ]
+    },
+    datamgr: {
+      name: "Менеджер по проектным данным",
+      reports: "CRM-менеджеру",
+      functions: [
+        "Собирает у производственных отделов информацию о проектах",
+        "Фиксирует материалы по вехам: цифры, фото, кейсовые детали",
+        "Передаёт данные CRM-менеджеру и Data Analyst",
+        "Систематизирует данные по ключевым ролям участников проектов (архитекторы, подрядчики, заказчики)",
+        "Фиксирует видео и отзывы клиентов по ходу проекта, а не только по завершении",
+        "Ведёт базу знаний: инсайты, экспертиза, лучшие практики по тендерным проектам и продуктам"
+      ]
+    },
+    pmmlead: {
+      name: "PMM Lead",
+      decode: "Lead Product Marketing Manager — руководитель продуктового маркетинга",
+      reports: "CMO",
+      functions: [
+        "Маркет-ресерч: ёмкость рынка, тренды, конкуренция, решения, цены",
+        "Формирует продуктовые гипотезы на основе рынка и ресурсов компании",
+        "Ставит задачи Product Manager и Growth Manager",
+        "Принимает решения по позиционированию, упаковке и ценообразованию продуктов и услуг",
+        "Определяет критерии перехода гипотезы в статус готового продукта или услуги"
+      ]
+    },
+    productmgr: {
+      name: "Product Manager",
+      decode: "менеджер по продукту",
+      reports: "PMM Lead",
+      functions: [
+        "Работает внутри команды/производства",
+        "Собирает продукт и регламенты",
+        "Собирает CJM клиента в рамках продукта",
+        "Упаковывает проектирование как первый оформленный продукт-вход",
+        "Регулярно актуализирует предложения на основе обратной связи рынка"
+      ]
+    },
+    growthmgr: {
+      name: "Growth Manager",
+      decode: "менеджер по росту",
+      reports: "PMM Lead",
+      functions: [
+        "Формирует рекламные кампании вокруг продукта",
+        "Планирует выход на рынок (Go-to-Market): приоритизация каналов и воронка продукта",
+        "Digital/Performance-продвижение: платные каналы, трафик и лиды в воронку продукта",
+        "Формирует продуктовый контент: каталоги, лендинги, презентации под конкретные продукты",
+        "Growth/retention: активация, онбординг, удержание, анализ метрик",
+        "Использует базу существующих клиентов как площадку для проверки спроса на новые гипотезы"
+      ]
+    },
+    webmasterprod: {
+      name: "Web Master",
+      decode: "веб-мастер (продуктовые лендинги и воронки)",
+      reports: "Growth Manager",
+      functions: [
+        "Продуктовые лендинги и посадочные страницы под конкретные продукты",
+        "Техническое SEO и вёрстка под продуктовые воронки",
+        "Веб-аналитика и конверсии по продуктовым лендингам",
+        "Задачи отличаются от Web Master в ветке бренда: там сайт и коммуникационные лендинги, здесь — продуктовые посадочные под воронки Growth Manager"
+      ]
+    }
+  };
+
+  var dName = document.getElementById("dName");
+  var dDecode = document.getElementById("dDecode");
+  var dReports = document.getElementById("dReports");
+  var dFuncs = document.getElementById("dFuncs");
+  var allRoleButtons = document.querySelectorAll("[data-role]");
+
+  function renderRole(id) {
+    var r = ROLES[id];
+    if (!r) return;
+    dName.textContent = r.name;
+    dDecode.textContent = r.decode || "";
+    dReports.innerHTML = r.reports ? ("<b>Подчиняется:</b> " + r.reports) : "";
+    dFuncs.innerHTML = "";
+    r.functions.forEach(function (f) {
+      var li = document.createElement("li");
+      li.textContent = f;
+      dFuncs.appendChild(li);
+    });
+    allRoleButtons.forEach(function (b) {
+      b.classList.toggle("active", b.getAttribute("data-role") === id);
+    });
+  }
+
+  if (dName && dFuncs) {
+    allRoleButtons.forEach(function (b) {
+      b.addEventListener("click", function () { renderRole(b.getAttribute("data-role")); });
+    });
+    renderRole("cmo");
+
+    // на узких экранах дерево шире контейнера — центрируем скролл, чтобы
+    // верх иерархии (директора/CMO) не оказался за левым краем вне видимости
+    var chartScrollBox = document.querySelector(".chart-scroll");
+    if (chartScrollBox) {
+      chartScrollBox.scrollLeft = (chartScrollBox.scrollWidth - chartScrollBox.clientWidth) / 2;
+    }
+  }
 
   // ---- Accordions (idx-row) ----
   document.querySelectorAll(".idx").forEach(function (group) {
