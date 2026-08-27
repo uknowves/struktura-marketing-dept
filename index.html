@@ -643,6 +643,53 @@ img { max-width: 100%; display: block; }
 .os .callout-grid h4 { font-size: 13.5px; color: #fff; }
 .os .callout-grid p { margin-top: 6px; font-size: 13.5px; line-height: 1.55; color: rgba(255,255,255,.6); }
 
+/* ---- Функциональное распределение (toggle) ---- */
+.os {
+  --fd-state: #5b8dee;
+  --fd-outstaff: #b073e0;
+  --fd-inhouse: #3ecf8e;
+  --fd-hire: #f2c94c;
+}
+.os .fdist { margin-top: 44px; padding: 22px 24px; border: 1px solid var(--line-dark); }
+.os .fdist-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; }
+.os .fdist-head .lbl { font-family: "JetBrains Mono", monospace; font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--orange); }
+.os .fdist-toggle { display: inline-flex; border: 1px solid var(--line-dark); }
+.os .fdist-btn {
+  font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+  padding: 8px 18px; background: transparent; color: rgba(255,255,255,.5); border: none; cursor: pointer;
+  transition: background .2s ease, color .2s ease;
+}
+.os .fdist-btn + .fdist-btn { border-left: 1px solid var(--line-dark); }
+.os .fdist-btn:hover { color: #fff; }
+.os .fdist-btn.is-active { background: var(--orange); color: #fff; }
+.os .fdist-legend {
+  display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 18px; padding-top: 18px;
+  border-top: 1px solid var(--line-dark);
+  max-height: 0; opacity: 0; overflow: hidden; margin-top: 0; padding-top: 0; border-top-color: transparent;
+  transition: max-height .35s var(--ease-out), opacity .3s ease, margin-top .35s var(--ease-out), padding-top .35s var(--ease-out);
+}
+.os .fdist.is-on .fdist-legend { max-height: 60px; opacity: 1; margin-top: 18px; padding-top: 18px; border-top-color: var(--line-dark); }
+.os .fdist-chip {
+  display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; color: rgba(255,255,255,.7);
+  background: none; border: none; font-family: "Onest", sans-serif; padding: 5px 9px; margin: -5px -9px;
+  cursor: pointer; border-radius: 3px; transition: opacity .2s ease, background .2s ease, color .2s ease;
+}
+.os .fdist-chip:hover { background: rgba(255,255,255,.06); color: #fff; }
+.os .fdist-chip i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; flex: none; transition: opacity .2s ease; }
+.os .fdist-chip[data-cat="state"] i { background: var(--fd-state); }
+.os .fdist-chip[data-cat="outstaff"] i { background: var(--fd-outstaff); }
+.os .fdist-chip[data-cat="inhouse"] i { background: var(--fd-inhouse); }
+.os .fdist-chip[data-cat="hire"] i { background: var(--fd-hire); }
+.os .fdist-chip.is-off { opacity: .4; }
+.os .fdist-chip.is-off i { opacity: .5; }
+
+.os .node { box-shadow: inset 3px 0 0 0 transparent; transition: border-color .2s ease, background .2s ease, transform .2s var(--ease-out), box-shadow .25s ease, opacity .25s ease; }
+.os #tree.fdist-on .node.fd-state { box-shadow: inset 3px 0 0 0 var(--fd-state); }
+.os #tree.fdist-on .node.fd-outstaff { box-shadow: inset 3px 0 0 0 var(--fd-outstaff); }
+.os #tree.fdist-on .node.fd-inhouse { box-shadow: inset 3px 0 0 0 var(--fd-inhouse); }
+.os #tree.fdist-on .node.fd-hire { box-shadow: inset 3px 0 0 0 var(--fd-hire); }
+.os #tree.fdist-on .node.fd-dim { box-shadow: inset 3px 0 0 0 transparent; opacity: .25; }
+
 </style>
 </head>
 <body class="antialiased">
@@ -1422,6 +1469,24 @@ img { max-width: 100%; display: block; }
     </div>
 
     <div class="wrap">
+      <div class="fdist">
+        <div class="fdist-head">
+          <span class="lbl">функциональное распределение</span>
+          <div class="fdist-toggle" role="group" aria-label="Функциональное распределение: вкл/выкл">
+            <button type="button" class="fdist-btn" data-fdist="on">on</button>
+            <button type="button" class="fdist-btn is-active" data-fdist="off">off</button>
+          </div>
+        </div>
+        <div class="fdist-legend" id="fdistLegend">
+          <button type="button" class="fdist-chip" data-cat="state"><i></i>State</button>
+          <button type="button" class="fdist-chip" data-cat="outstaff"><i></i>Аутстаффинг</button>
+          <button type="button" class="fdist-chip" data-cat="inhouse"><i></i>Инхауз</button>
+          <button type="button" class="fdist-chip" data-cat="hire"><i></i>Найм</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap">
       <div class="callout">
         <span class="lbl">разовые проекты на старте</span>
         <div class="callout-grid">
@@ -1850,6 +1915,60 @@ img { max-width: 100%; display: block; }
     if (chartScrollBox) {
       chartScrollBox.scrollLeft = (chartScrollBox.scrollWidth - chartScrollBox.clientWidth) / 2;
     }
+  }
+
+  // ---- Функциональное распределение (on/off) ----
+  var FDIST = {
+    state: ["cmo", "brandlead", "growthmgr", "webmaster", "webmasterprod", "contentdir", "designer", "pmmlead"],
+    outstaff: ["copywriter", "pr", "smm", "mediabuyer", "eventmgr"],
+    inhouse: ["datamgr", "productmgr"],
+    hire: ["abm", "osint", "crmmgr", "dataanalyst"]
+  };
+  var fdistBlock = document.querySelector(".fdist");
+  var fdistTree = document.getElementById("tree");
+  if (fdistBlock && fdistTree) {
+    Object.keys(FDIST).forEach(function (cat) {
+      FDIST[cat].forEach(function (roleId) {
+        var btn = fdistTree.querySelector('[data-role="' + roleId + '"]');
+        if (btn) btn.classList.add("fd-" + cat);
+      });
+    });
+    var fdistBtns = Array.prototype.slice.call(fdistBlock.querySelectorAll(".fdist-btn"));
+    var fdistChips = Array.prototype.slice.call(fdistBlock.querySelectorAll(".fdist-chip"));
+
+    function fdistResetChips() {
+      fdistChips.forEach(function (chip) {
+        chip.classList.remove("is-off");
+        var cat = chip.getAttribute("data-cat");
+        fdistTree.querySelectorAll(".fd-" + cat).forEach(function (node) {
+          node.classList.remove("fd-dim");
+        });
+      });
+    }
+
+    fdistBtns.forEach(function (b) {
+      b.addEventListener("click", function () {
+        var on = b.getAttribute("data-fdist") === "on";
+        fdistBtns.forEach(function (x) { x.classList.toggle("is-active", x === b); });
+        fdistBlock.classList.toggle("is-on", on);
+        fdistTree.classList.toggle("fdist-on", on);
+        // и вкл, и выкл возвращают распределение к чистому состоянию —
+        // все категории снова активны при следующем включении
+        fdistResetChips();
+      });
+    });
+
+    fdistChips.forEach(function (chip) {
+      chip.addEventListener("click", function () {
+        if (!fdistTree.classList.contains("fdist-on")) return;
+        var cat = chip.getAttribute("data-cat");
+        var turnOff = !chip.classList.contains("is-off");
+        chip.classList.toggle("is-off", turnOff);
+        fdistTree.querySelectorAll(".fd-" + cat).forEach(function (node) {
+          node.classList.toggle("fd-dim", turnOff);
+        });
+      });
+    });
   }
 
   // ---- Accordions (idx-row) ----
