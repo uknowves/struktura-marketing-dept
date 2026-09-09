@@ -316,12 +316,12 @@ img { max-width: 100%; display: block; }
 /* ---- Stage cards: pixel-digit icon + hover/focus detail reveal ---- */
 .stage-card { cursor: pointer; outline: none; padding: 0; justify-content: flex-start; }
 .stage-card:focus-visible { box-shadow: inset 0 0 0 1px var(--orange); }
-.stage-icon { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; width: 100%; max-width: 190px; margin: 0 auto 28px; }
+.stage-icon { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; width: 100%; max-width: 190px; margin: 28px auto; }
 .stage-icon span { aspect-ratio: 1 / 1; border: 1px solid rgba(255,90,0,0.2); background: transparent; transition: background .35s ease, border-color .35s ease; }
 .stage-card.active .stage-icon span.on { background: var(--orange); border-color: rgba(255,90,0,0.9); transition-delay: var(--d, 0ms); }
 .stage-card-foot { border-top: 1px solid var(--line-dark); padding-top: 20px; margin-top: auto; }
 .stage-num { display: block; font-family: "JetBrains Mono", monospace; color: var(--orange); font-size: 12px; letter-spacing: 0.02em; text-transform: uppercase; transition: color .2s ease; }
-.stage-label { display: block; font-family: "JetBrains Mono", monospace; font-size: 12px; letter-spacing: 0.02em; line-height: 1.45; color: rgba(255,255,255,0.55); margin-top: 7px; transition: color .2s ease; }
+.stage-label { display: block; min-height: 2.9em; font-family: "JetBrains Mono", monospace; font-size: 12px; letter-spacing: 0.02em; line-height: 1.45; color: rgba(255,255,255,0.55); margin-top: 7px; transition: color .2s ease; }
 .stage-card.active .stage-num { color: #fff; }
 .stage-card.active .stage-label { color: rgba(255,255,255,0.9); }
 .stage-detail { max-height: 0; opacity: 0; overflow: hidden; border: 1px solid var(--line-dark); border-top: none; background: var(--coal); transition: max-height .3s ease, opacity .25s ease, border-color .25s ease; }
@@ -370,11 +370,21 @@ img { max-width: 100%; display: block; }
 .idx-sub li::before { content: ""; position: absolute; left: 0; top: 9px; width: 6px; height: 1px; background: var(--orange); }
 
 /* ---- Goal tasks ---- */
-.goal-tasks { grid-column: 2; margin-top: 30px; display: grid; gap: 1px; background: var(--line-light); border: 1px solid var(--line-light); }
-@media (min-width: 760px) { .goal-tasks { grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); } }
-.task-card { background: var(--paper-card); padding: 22px 20px; }
-.task-card h4 { font-family: "JetBrains Mono", monospace; font-size: 13px; text-transform: none; line-height: 1.4; margin-bottom: 12px; color: var(--ink); }
-.task-card .why { font-size: 13px; line-height: 1.55; color: var(--ink-soft); margin-bottom: 14px; }
+.goal-tasks {
+  grid-column: 2; margin-top: 30px; counter-reset: taskCount;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1px; background: var(--line-light); border: 1px solid var(--line-light);
+}
+.task-card { position: relative; counter-increment: taskCount; background: var(--paper-card); padding: 26px 24px 24px; border-left: 2px solid transparent; transition: border-color 0.3s ease, background 0.3s ease; }
+.task-card::before {
+  content: counter(taskCount, decimal-leading-zero);
+  position: absolute; top: 14px; right: 16px;
+  font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 0.05em;
+  color: rgba(255, 90, 0, 0.4);
+}
+.task-card:hover { border-left-color: var(--orange); background: #fdfcfa; }
+.task-card h4 { font-family: "JetBrains Mono", monospace; font-size: 13px; text-transform: none; line-height: 1.4; margin-bottom: 14px; padding-right: 30px; color: var(--ink); }
+.task-card .why { font-size: 13px; line-height: 1.6; color: var(--ink-soft); margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--line-light); }
 .task-card .why b { color: var(--ink); font-weight: 600; }
 .task-kpi-label { font-family: "JetBrains Mono", monospace; font-size: 10px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--orange); margin-bottom: 8px; display: block; }
 .task-card ul { list-style: none; }
@@ -385,69 +395,93 @@ img { max-width: 100%; display: block; }
 /* ---- Audience groups ---- */
 .aud-block { grid-column: 2; }
 .aud-desc { font-size: 14px; line-height: 1.6; color: var(--ink-soft); margin-bottom: 22px; }
-.aud-cols { display: grid; gap: 26px; }
+.section-dark .aud-desc { color: rgba(255,255,255,0.62); }
+.aud-cols { display: grid; grid-template-columns: 1fr; gap: 26px 40px; }
 @media (min-width: 860px) { .aud-cols { grid-template-columns: 1fr 1fr; } }
 .chan-list { list-style: none; margin-top: 8px; border-top: 1px solid var(--line-light); }
-.chan-list li { padding: 10px 0; border-bottom: 1px solid var(--line-light); font-size: 13.6px; line-height: 1.55; color: var(--ink-soft); }
-.chan-list b { color: var(--ink); font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; margin-right: 8px; display: inline-block; }
+.chan-list li { padding: 12px 0; border-bottom: 1px solid var(--line-light); font-size: 13.6px; line-height: 1.6; color: var(--ink-soft); }
+.section-dark .chan-list, .section-dark .chan-list li { border-color: var(--line-dark); }
+.section-dark .chan-list li { color: rgba(255,255,255,0.62); }
+.chan-list b {
+  color: var(--coal); background: var(--orange);
+  font-family: "JetBrains Mono", monospace; font-size: 10.5px; letter-spacing: 0.05em; text-transform: uppercase;
+  padding: 3px 8px; margin-right: 2px; display: inline-block; font-style: normal;
+}
 .aud-note { margin-top: 22px; padding: 16px 20px; border-left: 2px solid var(--orange); background: rgba(255,90,0,0.05); font-size: 13.6px; line-height: 1.55; color: var(--ink-soft); }
 .aud-note b { color: var(--ink); }
+.section-dark .aud-note { color: rgba(255,255,255,0.62); background: rgba(255,90,0,0.08); }
+.section-dark .aud-note b { color: #fff; }
 
 /* ---- Strategy interstitial ---- */
-.strategy-hero { background: var(--coal-deep); color: #fff; padding: 88px 0; text-align: left; position: relative; overflow: hidden; }
-.strategy-hero::before { content: ""; position: absolute; inset: 0; background: radial-gradient(60% 90% at 15% 20%, rgba(255,90,0,0.14), transparent 60%); pointer-events: none; }
-.strategy-hero .kicker { color: rgba(255,255,255,0.5); margin-bottom: 26px; position: relative; }
-.strategy-hero h3 { position: relative; color: #fff; font-size: clamp(24px, 4.4vw, 52px); line-height: 1.12; letter-spacing: -0.005em; max-width: 20ch; }
-.strategy-hero h3 .en { display: block; color: var(--orange); font-size: clamp(15px, 1.6vw, 20px); letter-spacing: 0.06em; margin-bottom: 14px; }
-.strategy-hero .what-means { position: relative; margin-top: 32px; max-width: 760px; font-size: clamp(15px, 1.15vw, 18.5px); line-height: 1.65; color: rgba(255,255,255,0.68); font-family: "Onest", sans-serif; }
+.strategy-hero { background: var(--orange); color: #fff; padding: 100px 0 96px; text-align: left; position: relative; overflow: hidden; }
+.strategy-hero::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background-image: repeating-linear-gradient(-55deg, rgba(255,255,255,0.09) 0px, rgba(255,255,255,0.09) 2px, transparent 2px, transparent 46px);
+}
+.strategy-hero .kicker { color: rgba(255,255,255,0.85); margin-bottom: 30px; position: relative; }
+.strategy-hero h3 { position: relative; color: #fff; font-family: "JetBrains Mono", monospace; font-weight: 500; text-transform: uppercase; font-size: clamp(32px, 5.8vw, 76px); line-height: 1.05; letter-spacing: -0.01em; max-width: 19ch; text-wrap: balance; }
+.strategy-hero h3 .en { display: block; color: rgba(255,255,255,0.85); font-family: "JetBrains Mono", monospace; font-weight: 500; text-transform: uppercase; font-size: clamp(13px, 1.3vw, 16px); letter-spacing: 0.1em; margin-bottom: 18px; }
+.strategy-hero .what-means { position: relative; margin-top: 38px; max-width: 720px; font-size: clamp(16.5px, 1.3vw, 20px); line-height: 1.6; color: rgba(255,255,255,0.92); font-family: "Onest", sans-serif; }
 .strategy-hero .what-means b { color: #fff; font-family: "JetBrains Mono", monospace; text-transform: uppercase; font-size: 12.5px; letter-spacing: 0.06em; }
 
-.principle-grid { display: grid; gap: 1px; background: var(--line-dark); border: 1px solid var(--line-dark); }
+.principle-grid { display: grid; grid-template-columns: 1fr; gap: 1px; background: var(--line-dark); border: 1px solid var(--line-dark); }
 @media (min-width: 720px) { .principle-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1180px) { .principle-grid { grid-template-columns: repeat(4, 1fr); } }
-.principle-card { background: var(--coal); padding: 26px 22px; }
-.principle-card .num { font-family: "JetBrains Mono", monospace; color: var(--orange); font-size: 13px; display: block; margin-bottom: 14px; }
-.principle-card h4 { color: #fff; font-size: 14px; line-height: 1.3; margin-bottom: 10px; }
-.principle-card p { color: rgba(255,255,255,0.58); font-size: 13px; line-height: 1.55; }
+.principle-card { position: relative; background: var(--coal); padding: 28px 24px; transition: background 0.3s ease; overflow: hidden; }
+.principle-card::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--orange); transform: scaleX(0); transform-origin: left; transition: transform 0.35s var(--ease-out); }
+.principle-card:hover { background: #1f1f1f; }
+.principle-card:hover::after { transform: scaleX(1); }
+.principle-card .num { font-family: "JetBrains Mono", monospace; color: var(--orange); font-size: 13px; display: block; margin-bottom: 16px; }
+.principle-card h4 { color: #fff; font-size: 14px; line-height: 1.32; margin-bottom: 11px; }
+.principle-card p { color: rgba(255,255,255,0.58); font-size: 13px; line-height: 1.6; }
 
-/* ---- Radial functions diagram ---- */
-.radial-outer { max-width: 980px; margin: 0 auto; }
-.radial-wrap { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr); gap: 22px; padding: 40px 0; }
-@media (min-width: 720px) { .radial-wrap { gap: 40px; padding: 70px 0; } }
-.radial-hub {
-  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-  width: 104px; height: 104px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center; text-align: center;
-  background: var(--coal); border: 1px solid var(--orange);
-  font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 0.03em; color: var(--orange);
-  z-index: 3; box-shadow: 0 0 0 8px var(--coal), 0 0 40px rgba(255,90,0,0.25);
+/* ---- Functions diagram (Функции стратегии) — matches source-deck topology:
+   Мероприятия+Сайт converge left of hub, Спецпроекты+SMM converge right of hub,
+   PR / Performance connect straight up/down to hub. ---- */
+.fn-outer { max-width: 1040px; margin: 0 auto; }
+.fn-grid {
+  position: relative;
+  display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr);
+  column-gap: 20px; row-gap: 96px; padding: 24px 0 8px;
 }
-@media (min-width: 720px) { .radial-hub { width: 132px; height: 132px; font-size: 13px; } }
-#radialSvg { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
-#radialSvg line { stroke: var(--line-dark); stroke-width: 1; }
-.radial-box {
-  position: relative; z-index: 2;
+@media (min-width: 720px) { .fn-grid { column-gap: 48px; row-gap: 150px; padding: 40px 0 16px; } }
+.fn-hub {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  font-family: "JetBrains Mono", monospace; font-weight: 600; letter-spacing: 0.05em;
+  font-size: clamp(14px, 2vw, 21px); color: var(--orange);
+  z-index: 3; white-space: nowrap; pointer-events: none; background: var(--paper); padding: 4px 10px;
+}
+#fnSvg { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; overflow: visible; }
+#fnSvg line { stroke: rgba(26,26,26,0.38); stroke-width: 1.3; }
+.fn-box {
+  position: relative; z-index: 2; text-align: left;
   background: var(--coal); border: 1px solid var(--line-dark);
-  min-height: 108px; padding: 18px 18px;
+  min-height: 96px; padding: 18px 18px;
   display: flex; flex-direction: column; justify-content: center;
   cursor: pointer; transition: border-color 0.25s ease, transform 0.25s var(--ease-out);
   overflow: hidden;
 }
-@media (min-width: 720px) { .radial-box { min-height: 132px; padding: 20px 22px; } }
-.radial-box:hover, .radial-box:focus-visible, .radial-box.is-open { border-color: var(--orange); transform: translateY(-3px); }
-.radial-box h4 { color: #fff; font-size: clamp(13px, 1.4vw, 16px); letter-spacing: 0.02em; transition: opacity 0.2s ease, transform 0.2s ease; }
-.radial-reveal {
+@media (min-width: 720px) { .fn-box { min-height: 120px; padding: 20px 22px; } }
+.fn-box:hover, .fn-box:focus-visible, .fn-box.is-open { border-color: var(--orange); transform: translateY(-3px); }
+.fn-box h4 { color: #fff; font-size: clamp(13px, 1.4vw, 16px); letter-spacing: 0.02em; transition: opacity 0.2s ease, transform 0.2s ease; }
+.fn-reveal {
   position: absolute; inset: 0; background: rgba(24,24,24,0.97);
   display: flex; flex-direction: column; justify-content: center; gap: 6px;
   padding: 16px 20px; opacity: 0; transform: translateY(8px); pointer-events: none;
   transition: opacity 0.25s var(--ease-out), transform 0.25s var(--ease-out);
 }
-.radial-box:hover .radial-reveal, .radial-box:focus-visible .radial-reveal, .radial-box.is-open .radial-reveal { opacity: 1; transform: translateY(0); pointer-events: auto; }
-.radial-box:hover h4, .radial-box:focus-visible h4, .radial-box.is-open h4 { opacity: 0; transform: translateY(-6px); }
-.radial-reveal .lbl { font-family: "JetBrains Mono", monospace; font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--orange); margin-bottom: 4px; }
-.radial-reveal .stub { font-size: 12.5px; color: rgba(255,255,255,0.55); position: relative; padding-left: 13px; }
-.radial-reveal .stub::before { content: ""; position: absolute; left: 0; top: 7px; width: 5px; height: 1px; background: var(--orange); }
-.radial-note { margin: 40px auto 0; max-width: 700px; text-align: center; font-size: 13.5px; line-height: 1.6; color: rgba(255,255,255,0.5); }
+.fn-box:hover .fn-reveal, .fn-box:focus-visible .fn-reveal, .fn-box.is-open .fn-reveal { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.fn-box:hover h4, .fn-box:focus-visible h4, .fn-box.is-open h4 { opacity: 0; transform: translateY(-6px); }
+.fn-reveal .lbl { font-family: "JetBrains Mono", monospace; font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--orange); margin-bottom: 4px; }
+.fn-reveal .stub { font-size: 12.5px; color: rgba(255,255,255,0.55); position: relative; padding-left: 13px; }
+.fn-reveal .stub::before { content: ""; position: absolute; left: 0; top: 7px; width: 5px; height: 1px; background: var(--orange); }
+.fn-note { margin: 32px auto 0; max-width: 700px; text-align: center; font-size: 13.5px; line-height: 1.6; }
+@media (max-width: 719px) {
+  .fn-grid { grid-template-columns: 1fr; row-gap: 12px; padding: 8px 0; }
+  .fn-box { grid-column: 1 !important; grid-row: auto !important; }
+  .fn-hub { display: none; }
+  #fnSvg { display: none; }
+}
 
 /* ---- Calendar (Квартальный календарь) ---- */
 .cal-intro-row { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 26px; }
@@ -493,19 +527,29 @@ img { max-width: 100%; display: block; }
 /* ---- Calendar modal ---- */
 .cal-modal-scrim { position: fixed; inset: 0; z-index: 90; background: rgba(10,9,8,0.72); backdrop-filter: blur(3px); opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
 .cal-modal-scrim.open { opacity: 1; pointer-events: auto; }
-.cal-modal { position: fixed; z-index: 91; left: 50%; top: 50%; transform: translate(-50%, -46%); width: min(920px, 92vw); max-height: 86vh; overflow: hidden;
+.cal-modal { position: fixed; z-index: 91; left: 50%; top: 50%; transform: translate(-50%, -46%); width: min(1140px, 94vw); max-height: 90vh; overflow: hidden;
   background: var(--coal); border: 1px solid var(--line-dark); opacity: 0; pointer-events: none;
   transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out);
-  display: flex; }
+  display: flex; flex-direction: column; }
+@media (min-width: 760px) { .cal-modal { flex-direction: row; } }
 .cal-modal-scrim.open + .cal-modal, .cal-modal.open { opacity: 1; transform: translate(-50%, -50%); pointer-events: auto; }
 .cal-modal-main { flex: 1 1 auto; min-width: 0; padding: 34px 76px; overflow-y: auto; position: relative; }
 @media (max-width: 640px) { .cal-modal-main { padding: 60px 22px 30px; } }
-.cal-modal-close { position: absolute; top: 18px; right: 18px; width: 38px; height: 38px; border: 1px solid var(--line-dark); background: transparent; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: border-color 0.2s ease; }
+.cal-modal-close { position: absolute; top: 18px; right: 18px; z-index: 4; width: 38px; height: 38px; border: 1px solid var(--line-dark); background: var(--coal); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: border-color 0.2s ease; }
 .cal-modal-close:hover { border-color: var(--orange); color: var(--orange); }
-.cal-modal-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 46px; height: 46px; border: 1px solid var(--line-dark); background: rgba(255,255,255,0.02); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; transition: border-color 0.2s ease, color 0.2s ease, opacity 0.2s ease; }
+.cal-modal-arrow { position: absolute; top: 50%; transform: translateY(-50%); z-index: 4; width: 46px; height: 46px; border: 1px solid var(--line-dark); background: rgba(255,255,255,0.02); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; transition: border-color 0.2s ease, color 0.2s ease, opacity 0.2s ease; }
 .cal-modal-arrow:hover { border-color: var(--orange); color: var(--orange); }
 .cal-modal-arrow.prev { left: 16px; }
 .cal-modal-arrow.next { right: 16px; }
+@media (min-width: 760px) {
+  /* keep the arrow clear of the permanently reserved side panel */
+  .cal-modal-arrow.next { right: calc(280px + 16px); }
+}
+@media (max-width: 759px) {
+  /* stacked layout: keep the arrows in a header strip instead of the vertical
+     center, so they never drift over the rubric buttons or body text below */
+  .cal-modal-arrow { top: 60px; transform: none; width: 36px; height: 36px; font-size: 16px; }
+}
 .cal-modal-arrow[disabled] { opacity: 0.25; cursor: default; }
 .cal-modal-arrow[disabled]:hover { border-color: var(--line-dark); color: #fff; }
 .cal-modal-head { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; }
@@ -517,20 +561,58 @@ img { max-width: 100%; display: block; }
 .cal-rubrics { margin-top: 34px; padding-top: 26px; border-top: 1px solid var(--line-dark); }
 .cal-rubrics .lbl { font-family: "JetBrains Mono", monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--orange); margin-bottom: 14px; display: block; }
 .cal-rubric-list { list-style: none; display: flex; flex-wrap: wrap; gap: 10px; }
-.cal-rubric-item { font-family: "JetBrains Mono", monospace; font-size: 11.5px; letter-spacing: 0.04em; text-transform: uppercase; color: rgba(255,255,255,0.6); border: 1px solid var(--line-dark); padding: 9px 16px; cursor: default; transition: border-color 0.2s ease, color 0.2s ease; }
-@media (hover: hover) and (pointer: fine) {
-  .cal-rubric-item:hover { border-color: var(--orange); color: #fff; }
-}
+.cal-rubric-item { font-family: "JetBrains Mono", monospace; font-size: 11.5px; letter-spacing: 0.04em; text-transform: uppercase; color: rgba(255,255,255,0.6); background: transparent; border: 1px solid var(--line-dark); padding: 9px 16px; cursor: pointer; transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease; }
+.cal-rubric-item:hover { border-color: var(--orange); color: #fff; }
+.cal-rubric-item.active { border-color: var(--orange); color: var(--orange); background: rgba(255,90,0,0.08); }
+/* Side panel: space is reserved from the moment the modal opens, so the main
+   column's width/height never changes — only the content inside cal-side slides in. */
 .cal-side {
-  flex: 0 0 0; width: 0; overflow: hidden; background: var(--coal-deep); border-left: 1px solid var(--line-dark);
-  transition: width 0.32s var(--ease-out);
+  position: relative; flex: 0 0 auto; width: 100%; min-height: 190px;
+  background: var(--coal-deep); border-top: 1px solid var(--line-dark);
 }
-.cal-modal.side-open .cal-side { flex-basis: 280px; width: 280px; }
-.cal-side-inner { width: 280px; padding: 30px 24px; }
-.cal-side-thumb { width: 100%; aspect-ratio: 4/3; background: repeating-linear-gradient(135deg, rgba(255,90,0,0.14), rgba(255,90,0,0.14) 10px, rgba(255,255,255,0.03) 10px, rgba(255,255,255,0.03) 20px); border: 1px dashed var(--line-dark); display: flex; align-items: center; justify-content: center; margin-bottom: 18px; }
+@media (min-width: 760px) {
+  .cal-side { flex: 0 0 280px; width: 280px; min-height: 0; border-top: none; border-left: 1px solid var(--line-dark); }
+}
+.cal-side-placeholder {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px;
+  font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; line-height: 1.6;
+  color: rgba(255,255,255,0.3); transition: opacity 0.25s ease;
+}
+.cal-side.filled .cal-side-placeholder { opacity: 0; }
+.cal-side-inner {
+  position: absolute; inset: 0; overflow-y: auto; padding: 56px 24px 26px;
+  transform: translateX(24px); opacity: 0; pointer-events: none;
+  transition: transform 0.4s var(--ease-out), opacity 0.32s ease;
+}
+.cal-side.filled .cal-side-inner { transform: translateX(0); opacity: 1; pointer-events: auto; }
+.cal-side-thumb {
+  display: flex; width: 100%; aspect-ratio: 4/3; margin: 0 0 18px; padding: 0; cursor: pointer;
+  background: repeating-linear-gradient(135deg, rgba(255,90,0,0.14), rgba(255,90,0,0.14) 10px, rgba(255,255,255,0.03) 10px, rgba(255,255,255,0.03) 20px);
+  border: 1px dashed var(--line-dark); align-items: center; justify-content: center; transition: border-color 0.2s ease;
+  font: inherit; color: inherit;
+}
+.cal-side-thumb:hover { border-color: var(--orange); }
 .cal-side-thumb span { font-family: "JetBrains Mono", monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.4); text-align: center; padding: 0 14px; }
 .cal-side-name { font-family: "JetBrains Mono", monospace; font-size: 12.5px; letter-spacing: 0.04em; text-transform: uppercase; color: #fff; margin-bottom: 10px; }
 .cal-side-desc { font-size: 13px; line-height: 1.55; color: rgba(255,255,255,0.5); }
+
+/* ---- Calendar rubric lightbox (opens above the calendar modal) ---- */
+.cal-lightbox-scrim { position: fixed; inset: 0; z-index: 96; background: rgba(8,7,6,0.8); backdrop-filter: blur(3px); opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+.cal-lightbox-scrim.open { opacity: 1; pointer-events: auto; }
+.cal-lightbox {
+  position: fixed; z-index: 97; left: 50%; top: 50%; transform: translate(-50%, -46%) scale(0.97);
+  width: min(760px, 90vw); max-height: 90vh; overflow: hidden auto;
+  background: var(--coal); border: 1px solid var(--line-dark); padding: 60px 40px 44px;
+  opacity: 0; pointer-events: none; transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out);
+}
+.cal-lightbox.open { opacity: 1; transform: translate(-50%, -50%) scale(1); pointer-events: auto; }
+.cal-lightbox-thumb {
+  width: 100%; aspect-ratio: 16/10; display: flex; align-items: center; justify-content: center; margin-bottom: 22px;
+  background: repeating-linear-gradient(135deg, rgba(255,90,0,0.16), rgba(255,90,0,0.16) 12px, rgba(255,255,255,0.03) 12px, rgba(255,255,255,0.03) 24px);
+  border: 1px dashed var(--line-dark);
+}
+.cal-lightbox-thumb span { font-family: "JetBrains Mono", monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.45); }
+.cal-lightbox-name { font-family: "JetBrains Mono", monospace; font-size: 14px; letter-spacing: 0.05em; text-transform: uppercase; color: #fff; text-align: center; }
 
 /* ---- Final invite (back to org structure) ---- */
 .invite-wrap { border: 1px dashed rgba(255,90,0,0.35); padding: 44px 36px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 28px; }
@@ -603,6 +685,9 @@ body.gate-locked #pwGate { display: flex; }
   function unlock() {
     body.classList.remove("gate-locked");
     try { localStorage.setItem(KEY, "1"); } catch (e) {}
+    // Content (incl. the functions diagram) is laid out for the first time only once
+    // the gate is removed — nudge any load/resize-driven geometry to recompute now.
+    setTimeout(function () { window.dispatchEvent(new Event("resize")); }, 50);
   }
   try {
     if (localStorage.getItem(KEY) === "1") { unlock(); return; }
@@ -787,8 +872,8 @@ body.gate-locked #pwGate { display: flex; }
 
     <div class="idx reveal" id="goalsAccordion">
 
-      <div class="idx-row on" data-idx="0">
-        <button class="idx-trigger" aria-expanded="true">
+      <div class="idx-row" data-idx="0">
+        <button class="idx-trigger" aria-expanded="false">
           <span class="idx-num">01</span>
           <span class="idx-title-wrap"><span class="idx-title">Цель 1. Обеспечить постоянное присутствие STRUKTURA в профессиональном информационном поле</span></span>
           <span class="idx-sign" aria-hidden="true">+</span>
@@ -1086,8 +1171,8 @@ body.gate-locked #pwGate { display: flex; }
 
     <div class="idx reveal" id="audienceAccordion">
 
-      <div class="idx-row on" data-idx="0">
-        <button class="idx-trigger" aria-expanded="true">
+      <div class="idx-row" data-idx="0">
+        <button class="idx-trigger" aria-expanded="false">
           <span class="idx-num">01</span>
           <span class="idx-title-wrap"><span class="idx-title">Группа 1 — ЛПР / ЛВР</span></span>
           <span class="idx-sign" aria-hidden="true">+</span>
@@ -1215,7 +1300,7 @@ body.gate-locked #pwGate { display: flex; }
   </div>
 </section>
 
-<section class="section section-dark" style="padding-top:0;">
+<section class="section section-dark">
   <div class="container-x">
     <div class="section-head reveal" style="margin-bottom:36px;">
       <div class="section-head-row">
@@ -1246,57 +1331,57 @@ body.gate-locked #pwGate { display: flex; }
         <span class="section-head-mark">STRUKTURA<span style="font-size:9px; vertical-align:super;">+</span></span>
       </div>
       <h2>Функции стратегии</h2>
-      <p class="section-lede">Шесть функций работают вокруг единого центра — STRUKTURA. Наведите курсор на любую, чтобы увидеть форматы (заполним позже).</p>
+      <p class="section-lede">Мероприятия и Сайт, Спецпроекты и SMM работают в связке; PR и Performance — прямые каналы к ядру бренда. Наведите курсор на функцию, чтобы увидеть форматы (заполним позже).</p>
     </div>
 
-    <div class="radial-outer reveal">
-      <div class="radial-wrap" id="radialWrap">
-        <svg id="radialSvg" aria-hidden="true"></svg>
-        <div class="radial-hub">STRUKTURA</div>
-        <button class="radial-box" data-fn="events" style="grid-column:1; grid-row:1;">
+    <div class="fn-outer reveal">
+      <div class="fn-grid" id="fnWrap">
+        <svg id="fnSvg" aria-hidden="true"></svg>
+        <div class="fn-hub" id="fnHub">STRUKTURA</div>
+        <button class="fn-box" data-fn="events" style="grid-column:1; grid-row:1;">
           <h4>Мероприятия</h4>
-          <div class="radial-reveal">
+          <div class="fn-reveal">
             <span class="lbl">Форматы</span>
             <span class="stub">Пункт 1</span><span class="stub">Пункт 2</span><span class="stub">Пункт 3</span>
           </div>
         </button>
-        <button class="radial-box" data-fn="pr" style="grid-column:2; grid-row:1;">
+        <button class="fn-box" data-fn="pr" style="grid-column:2; grid-row:1;">
           <h4>PR</h4>
-          <div class="radial-reveal">
+          <div class="fn-reveal">
             <span class="lbl">Форматы</span>
             <span class="stub">Пункт 1</span><span class="stub">Пункт 2</span><span class="stub">Пункт 3</span>
           </div>
         </button>
-        <button class="radial-box" data-fn="spec" style="grid-column:3; grid-row:1;">
+        <button class="fn-box" data-fn="spec" style="grid-column:3; grid-row:1;">
           <h4>Спецпроекты</h4>
-          <div class="radial-reveal">
+          <div class="fn-reveal">
             <span class="lbl">Форматы</span>
             <span class="stub">Пункт 1</span><span class="stub">Пункт 2</span><span class="stub">Пункт 3</span>
           </div>
         </button>
-        <button class="radial-box" data-fn="site" style="grid-column:1; grid-row:2;">
+        <button class="fn-box" data-fn="site" style="grid-column:1; grid-row:2;">
           <h4>Сайт</h4>
-          <div class="radial-reveal">
+          <div class="fn-reveal">
             <span class="lbl">Форматы</span>
             <span class="stub">Пункт 1</span><span class="stub">Пункт 2</span><span class="stub">Пункт 3</span>
           </div>
         </button>
-        <button class="radial-box" data-fn="performance" style="grid-column:2; grid-row:2;">
+        <button class="fn-box" data-fn="performance" style="grid-column:2; grid-row:2;">
           <h4>Performance</h4>
-          <div class="radial-reveal">
+          <div class="fn-reveal">
             <span class="lbl">Форматы</span>
             <span class="stub">Пункт 1</span><span class="stub">Пункт 2</span><span class="stub">Пункт 3</span>
           </div>
         </button>
-        <button class="radial-box" data-fn="smm" style="grid-column:3; grid-row:2;">
+        <button class="fn-box" data-fn="smm" style="grid-column:3; grid-row:2;">
           <h4>SMM</h4>
-          <div class="radial-reveal">
+          <div class="fn-reveal">
             <span class="lbl">Форматы</span>
             <span class="stub">Пункт 1</span><span class="stub">Пункт 2</span><span class="stub">Пункт 3</span>
           </div>
         </button>
       </div>
-      <p class="radial-note" style="color:var(--ink-soft);">Форматы для каждой функции — в разработке, появятся здесь.</p>
+      <p class="fn-note" style="color:var(--ink-soft);">Форматы для каждой функции — в разработке, появятся здесь.</p>
     </div>
   </div>
 </section>
@@ -1326,10 +1411,10 @@ body.gate-locked #pwGate { display: flex; }
 <div class="cal-modal-scrim" id="calScrim"></div>
 <div class="cal-modal" id="calModal" role="dialog" aria-modal="true" aria-label="Детали ячейки календаря">
   <button class="cal-modal-arrow prev" id="calPrev" aria-label="Предыдущий квартал">←</button>
+  <button class="cal-modal-close" id="calClose" aria-label="Закрыть">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="1.5"/></svg>
+  </button>
   <div class="cal-modal-main">
-    <button class="cal-modal-close" id="calClose" aria-label="Закрыть">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="1.5"/></svg>
-    </button>
     <div class="cal-modal-head">
       <i id="calModalDot"></i>
       <span class="chan" id="calModalChan">TG</span>
@@ -1342,13 +1427,23 @@ body.gate-locked #pwGate { display: flex; }
     </div>
   </div>
   <aside class="cal-side" id="calSide">
-    <div class="cal-side-inner">
-      <div class="cal-side-thumb"><span>Пример появится позже</span></div>
+    <div class="cal-side-placeholder" id="calSidePlaceholder"><span>Выберите рубрику,<br/>чтобы увидеть пример</span></div>
+    <div class="cal-side-inner" id="calSideInner">
+      <button class="cal-side-thumb" id="calSideThumb" type="button" aria-label="Открыть пример крупнее"><span>Пример появится позже</span></button>
       <div class="cal-side-name" id="calSideName">Рубрика 1</div>
       <p class="cal-side-desc" id="calSideDesc">Описание примера контента для этой рубрики будет добавлено позже.</p>
     </div>
   </aside>
   <button class="cal-modal-arrow next" id="calNext" aria-label="Следующий квартал">→</button>
+</div>
+
+<div class="cal-lightbox-scrim" id="calLightboxScrim"></div>
+<div class="cal-lightbox" id="calLightbox" role="dialog" aria-modal="true" aria-label="Пример рубрики крупным планом">
+  <button class="cal-modal-close" id="calLightboxClose" aria-label="Закрыть">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="1.5"/></svg>
+  </button>
+  <div class="cal-lightbox-thumb"><span>Пример появится позже</span></div>
+  <div class="cal-lightbox-name" id="calLightboxName">Рубрика 1</div>
 </div>
 
 <!-- ============ FINAL — назад к оргструктуре (ссылка №3) ============ -->
@@ -1495,34 +1590,71 @@ body.gate-locked #pwGate { display: flex; }
     });
   });
 
-  // ---- Radial diagram: connecting lines + click-to-open on touch ----
-  function drawRadialLines() {
-    var wrap = document.getElementById("radialWrap");
-    var svg = document.getElementById("radialSvg");
-    if (!wrap || !svg) return;
+  // ---- Functions diagram: connecting lines (matches source-deck topology) + click-to-open on touch ----
+  function drawFnLines() {
+    var wrap = document.getElementById("fnWrap");
+    var svg = document.getElementById("fnSvg");
+    var hub = document.getElementById("fnHub");
+    if (!wrap || !svg || !hub) return;
+    svg.innerHTML = "";
+    if (hub.offsetParent === null) return; // hidden on narrow viewports — no geometry to draw
+
     var wrapRect = wrap.getBoundingClientRect();
     svg.setAttribute("viewBox", "0 0 " + wrapRect.width + " " + wrapRect.height);
-    svg.innerHTML = "";
-    var cx = wrapRect.width / 2, cy = wrapRect.height / 2;
-    wrap.querySelectorAll(".radial-box").forEach(function (box) {
-      var r = box.getBoundingClientRect();
-      var bx = r.left - wrapRect.left + r.width / 2;
-      var by = r.top - wrapRect.top + r.height / 2;
-      var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-      line.setAttribute("x1", cx); line.setAttribute("y1", cy);
-      line.setAttribute("x2", bx); line.setAttribute("y2", by);
-      svg.appendChild(line);
-    });
+
+    var defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+    defs.innerHTML = '<marker id="fnArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="rgba(26,26,26,0.5)"></path></marker>';
+    svg.appendChild(defs);
+
+    function rectOf(sel) {
+      var el = wrap.querySelector(sel);
+      var r = el.getBoundingClientRect();
+      return {
+        top: r.top - wrapRect.top, bottom: r.bottom - wrapRect.top,
+        left: r.left - wrapRect.left, right: r.right - wrapRect.left,
+        cx: r.left - wrapRect.left + r.width / 2, cy: r.top - wrapRect.top + r.height / 2
+      };
+    }
+
+    var hubR = rectOf("#fnHub");
+    var events = rectOf('[data-fn="events"]');
+    var pr = rectOf('[data-fn="pr"]');
+    var spec = rectOf('[data-fn="spec"]');
+    var site = rectOf('[data-fn="site"]');
+    var perf = rectOf('[data-fn="performance"]');
+    var smm = rectOf('[data-fn="smm"]');
+
+    var vLeftX = (events.right + pr.left) / 2;
+    var vRightX = (spec.left + pr.right) / 2;
+    var vY = (events.bottom + site.top) / 2;
+
+    function line(x1, y1, x2, y2) {
+      var l = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      l.setAttribute("x1", x1); l.setAttribute("y1", y1);
+      l.setAttribute("x2", x2); l.setAttribute("y2", y2);
+      l.setAttribute("marker-end", "url(#fnArrow)");
+      svg.appendChild(l);
+    }
+
+    // Left bowtie: Мероприятия + Сайт converge left of the hub
+    line(vLeftX, vY, events.cx, events.bottom + 4);
+    line(vLeftX, vY, site.cx, site.top - 4);
+    // Right bowtie: Спецпроекты + SMM converge right of the hub
+    line(vRightX, vY, spec.cx, spec.bottom + 4);
+    line(vRightX, vY, smm.cx, smm.top - 4);
+    // Straight vertical links: PR above, Performance below
+    line(hubR.cx, hubR.top - 6, pr.cx, pr.bottom + 4);
+    line(hubR.cx, hubR.bottom + 6, perf.cx, perf.top - 4);
   }
-  window.addEventListener("load", drawRadialLines);
+  window.addEventListener("load", drawFnLines);
   window.addEventListener("resize", function () {
-    clearTimeout(window.__radialT);
-    window.__radialT = setTimeout(drawRadialLines, 120);
+    clearTimeout(window.__fnT);
+    window.__fnT = setTimeout(drawFnLines, 120);
   });
-  document.querySelectorAll(".radial-box").forEach(function (box) {
+  document.querySelectorAll(".fn-box").forEach(function (box) {
     box.addEventListener("click", function () {
       var willOpen = !box.classList.contains("is-open");
-      document.querySelectorAll(".radial-box.is-open").forEach(function (b) { b.classList.remove("is-open"); });
+      document.querySelectorAll(".fn-box.is-open").forEach(function (b) { b.classList.remove("is-open"); });
       if (willOpen) box.classList.add("is-open");
     });
   });
@@ -1628,8 +1760,38 @@ body.gate-locked #pwGate { display: flex; }
   var calSide = document.getElementById("calSide");
   var calSideName = document.getElementById("calSideName");
   var calSideDesc = document.getElementById("calSideDesc");
+  var calSideThumb = document.getElementById("calSideThumb");
 
-  var curChan = 0, curCell = 0;
+  // ---- Rubric example lightbox (opens above the calendar modal) ----
+  var calLightboxScrim = document.getElementById("calLightboxScrim");
+  var calLightbox = document.getElementById("calLightbox");
+  var calLightboxClose = document.getElementById("calLightboxClose");
+  var calLightboxName = document.getElementById("calLightboxName");
+
+  function openCalLightbox() {
+    calLightboxName.textContent = calSideName.textContent;
+    calLightboxScrim.classList.add("open");
+    calLightbox.classList.add("open");
+  }
+  function closeCalLightbox() {
+    calLightboxScrim.classList.remove("open");
+    calLightbox.classList.remove("open");
+  }
+  calSideThumb.addEventListener("click", openCalLightbox);
+  calLightboxClose.addEventListener("click", closeCalLightbox);
+  calLightboxScrim.addEventListener("click", closeCalLightbox);
+
+  var curChan = 0, curCell = 0, curRubric = -1;
+
+  function selectRubric(name, idx) {
+    curRubric = idx;
+    calSideName.textContent = name;
+    calSideDesc.textContent = "Пример контента и описание для «" + name + "» появятся здесь позже.";
+    calSide.classList.add("filled");
+    calRubricList.querySelectorAll(".cal-rubric-item").forEach(function (el, i) {
+      el.classList.toggle("active", i === idx);
+    });
+  }
 
   function renderCalModal() {
     var chan = CHANNELS[curChan];
@@ -1640,21 +1802,27 @@ body.gate-locked #pwGate { display: flex; }
     calModalBody.textContent = cell.empty ? "Контент для этого периода пока не определён." : cell.text;
     calModalBody.classList.toggle("is-empty", !!cell.empty);
 
+    // Reset the side panel to its empty placeholder state — the reserved space
+    // itself never changes size, only its contents reset when the cell changes.
+    curRubric = -1;
+    calSide.classList.remove("filled");
     calRubricList.innerHTML = "";
-    ["Рубрика 1", "Рубрика 2", "Рубрика 3"].forEach(function (name) {
+    ["Рубрика 1", "Рубрика 2", "Рубрика 3"].forEach(function (name, idx) {
       var li = document.createElement("li");
       li.className = "cal-rubric-item";
+      li.type = "button";
       li.textContent = name;
-      li.addEventListener("mouseenter", function () {
-        calSideName.textContent = name;
-        calSideDesc.textContent = "Пример контента и описание для «" + name + "» появятся здесь позже.";
-        calModal.classList.add("side-open");
+      li.addEventListener("click", function () {
+        if (curRubric === idx) {
+          // clicking the active rubric again hides the example and restores the placeholder
+          curRubric = -1;
+          calSide.classList.remove("filled");
+          li.classList.remove("active");
+        } else {
+          selectRubric(name, idx);
+        }
       });
       calRubricList.appendChild(li);
-    });
-    calSide.addEventListener("mouseleave", function () { calModal.classList.remove("side-open"); });
-    calRubricList.addEventListener("mouseleave", function (e) {
-      if (!calSide.contains(e.relatedTarget)) calModal.classList.remove("side-open");
     });
 
     calPrev.disabled = curCell === 0;
@@ -1671,13 +1839,16 @@ body.gate-locked #pwGate { display: flex; }
   function closeCalModal() {
     calScrim.classList.remove("open");
     calModal.classList.remove("open");
-    calModal.classList.remove("side-open");
+    closeCalLightbox();
     document.body.style.overflow = "";
   }
   calClose.addEventListener("click", closeCalModal);
   calScrim.addEventListener("click", closeCalModal);
   window.addEventListener("keydown", function (e) {
-    if (e.key === "Escape") closeCalModal();
+    if (e.key === "Escape") {
+      if (calLightbox.classList.contains("open")) closeCalLightbox();
+      else closeCalModal();
+    }
     if (calModal.classList.contains("open")) {
       if (e.key === "ArrowLeft" && !calPrev.disabled) { curCell--; renderCalModal(); }
       if (e.key === "ArrowRight" && !calNext.disabled) { curCell++; renderCalModal(); }
