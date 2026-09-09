@@ -690,9 +690,69 @@ img { max-width: 100%; display: block; }
 .os #tree.fdist-on .node.fd-hire { box-shadow: inset 3px 0 0 0 var(--fd-hire); }
 .os #tree.fdist-on .node.fd-dim { box-shadow: inset 3px 0 0 0 transparent; opacity: .25; }
 
+/* ---- Password gate ---- */
+body.gate-locked { overflow: hidden; }
+body.gate-locked > *:not(#pwGate) { display: none !important; }
+#pwGate { position: fixed; inset: 0; z-index: 9999; background: var(--coal-deep); display: none; align-items: center; justify-content: center; padding: 24px; }
+body.gate-locked #pwGate { display: flex; }
+.pwgate-box { width: 100%; max-width: 420px; text-align: center; }
+.pwgate-mark { font-family: "JetBrains Mono", monospace; font-size: 20px; letter-spacing: 0.02em; margin-bottom: 10px; }
+.pwgate-mark b { color: #fff; font-weight: 600; }
+.pwgate-mark .plus { color: var(--orange); }
+.pwgate-mark .rest { color: rgba(255,255,255,0.5); font-weight: 400; letter-spacing: 0.14em; margin-left: 6px; font-size: 13px; }
+.pwgate-sub { font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 34px; }
+.pwgate-input { width: 100%; height: 58px; padding: 0 20px; margin-bottom: 14px; background: rgba(255,255,255,0.03); border: 1px solid var(--line-dark); color: #fff; font-family: "Onest", sans-serif; font-size: 15px; text-align: center; transition: border-color 0.2s ease; }
+.pwgate-input::placeholder { color: rgba(255,255,255,0.35); }
+.pwgate-input:focus { outline: none; border-color: var(--orange); }
+.pwgate-btn { width: 100%; height: 58px; border: none; cursor: pointer; background: var(--orange); color: #fff; font-family: "JetBrains Mono", monospace; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; transition: background-color 0.2s ease, transform 0.15s ease; }
+.pwgate-btn:hover { background: var(--orange-dark); }
+.pwgate-btn:active { transform: scale(0.99); }
+.pwgate-err { margin-top: 16px; font-family: "JetBrains Mono", monospace; font-size: 11.5px; letter-spacing: 0.06em; color: #ff6b5b; opacity: 0; transition: opacity 0.2s ease; }
+.pwgate-err.show { opacity: 1; }
+.pwgate-input.shake { animation: pwgateShake 0.4s; }
+@keyframes pwgateShake { 0%,100% { transform: translateX(0); } 20% { transform: translateX(-8px); } 40% { transform: translateX(8px); } 60% { transform: translateX(-5px); } 80% { transform: translateX(5px); } }
+
 </style>
 </head>
-<body class="antialiased">
+<body class="antialiased gate-locked">
+
+<div id="pwGate">
+  <div class="pwgate-box">
+    <div class="pwgate-mark"><b>STRUKTURA</b><span class="plus">+</span><span class="rest">МАРКЕТИНГ И СТРАТЕГИЯ</span></div>
+    <div class="pwgate-sub">Материал защищён паролем</div>
+    <input type="password" class="pwgate-input" id="pwGateInput" placeholder="Пароль" autocomplete="off" />
+    <button type="button" class="pwgate-btn" id="pwGateBtn">Открыть</button>
+    <div class="pwgate-err" id="pwGateErr">Неверный пароль</div>
+  </div>
+</div>
+<script>
+(function () {
+  var KEY = "struktura_gate_ok";
+  var PASS = "stateofstruktura";
+  var body = document.body;
+  function unlock() {
+    body.classList.remove("gate-locked");
+    try { localStorage.setItem(KEY, "1"); } catch (e) {}
+  }
+  try {
+    if (localStorage.getItem(KEY) === "1") { unlock(); return; }
+  } catch (e) {}
+  var input = document.getElementById("pwGateInput");
+  var btn = document.getElementById("pwGateBtn");
+  var err = document.getElementById("pwGateErr");
+  function tryUnlock() {
+    if (input.value === PASS) { unlock(); }
+    else {
+      err.classList.add("show");
+      input.classList.remove("shake"); void input.offsetWidth; input.classList.add("shake");
+      input.value = "";
+      input.focus();
+    }
+  }
+  btn.addEventListener("click", tryUnlock);
+  input.addEventListener("keydown", function (e) { if (e.key === "Enter") tryUnlock(); });
+})();
+</script>
 
 <!-- ============ NAV ============ -->
 <header class="site-nav" id="siteNav">
@@ -967,14 +1027,14 @@ img { max-width: 100%; display: block; }
         <button class="idx-trigger" aria-expanded="false">
           <span class="idx-num">06</span>
           <span class="idx-title-wrap">
-            <span class="idx-title">Слабая подготовка к сделкам</span>
+            <span class="idx-title">Нет системной работы по подготовке к сделкам</span>
             <span class="idx-badge">конверсия 6/10</span>
           </span>
           <span class="idx-sign" aria-hidden="true">+</span>
         </button>
         <div class="idx-body"><div class="idx-body-inner"><div class="idx-content">
           <span aria-hidden="true"></span>
-          <p class="idx-desc">Узкое место — сборка КП; инженерный ресурс перегружается на упаковке оффера вместо инженерных задач.</p>
+          <p class="idx-desc">Узкое место — сборка КП; отсутствует автоматизация и систематизированная помощь в подготовке к сделкам.</p>
         </div></div></div>
       </div>
     </div>
