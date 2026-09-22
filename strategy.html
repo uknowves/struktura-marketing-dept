@@ -392,6 +392,17 @@ img { max-width: 100%; display: block; }
 .task-card li + li { margin-top: 6px; }
 .task-card li::before { content: ""; position: absolute; left: 0; top: 8px; width: 5px; height: 1px; background: var(--orange); }
 
+/* ---- Functions: Performance addendum ---- */
+.fn-extra { margin-top: 48px; }
+.fn-extra-eyebrow { font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--orange); margin-bottom: 10px; }
+.fn-extra h3 { font-family: "CoFo Sans Mono", monospace; text-transform: uppercase; font-size: 21px; letter-spacing: 0.01em; margin-bottom: 18px; color: var(--ink); }
+.fn-extra-intro { padding: 20px 24px; border: 1px solid var(--line-light); background: var(--paper-card); font-size: 14px; line-height: 1.65; color: var(--ink-soft); }
+.fn-extra-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1px; background: var(--line-light); border: 1px solid var(--line-light); border-top: none; }
+.fn-extra-card { background: var(--paper-card); padding: 22px 22px 24px; }
+.fn-extra-card h4 { display: flex; align-items: baseline; gap: 8px; font-family: "JetBrains Mono", monospace; font-size: 12.5px; letter-spacing: 0.01em; text-transform: none; color: var(--ink); margin-bottom: 10px; }
+.fn-extra-card h4 .arrow { color: var(--orange); }
+.fn-extra-card p { font-size: 13.4px; line-height: 1.6; color: var(--ink-soft); }
+
 /* ---- Audience groups ---- */
 .aud-block { grid-column: 2; }
 .aud-desc { font-size: 14px; line-height: 1.6; color: var(--ink-soft); margin-bottom: 22px; }
@@ -1429,6 +1440,12 @@ body.gate-locked #pwGate { display: flex; }
         </div>
       </div>
       <p class="fn-note">Наведите курсор на карточку — рядом появится список форматов и задач канала.</p>
+
+      <div class="fn-extra reveal">
+        <span class="fn-extra-eyebrow">Performance</span>
+        <h3>Performance</h3>
+        <p class="fn-extra-intro">Performance-маркетинг — это комплексная система продвижения, позволяющая управлять вниманием аудитории на верхнем уровне воронки. Каждый этап взаимодействия оцифрован: анализируется, как контент влияет на восприятие бренда, и постоянно оптимизируются кампании для достижения максимального медийного эффекта.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -2047,7 +2064,10 @@ body.gate-locked #pwGate { display: flex; }
       { q: [7,8], text: "Квартальное размещение в авторитетных изданиях о предпринимательстве и бизнесе. Список медиа: " + PR_MEDIA_BASE + ". Дополнительные медиа: " + PR_MEDIA_EXTRA + ".", rubrics: PR_RUBRICS, links: PR_EXTRA_LINKS }
     ]},
     { key: "performance", label: "Performance", color: "#3ecf8e", cells: [
-      { q: [1], text: "", empty: true }
+      { q: [1,2], text: "Запуск: настройка источников и аналитики и тестирование различных гипотез.\n\n18% от общего performance бюджета", reach: "Охват ЦА: 2.5-6млн" },
+      { q: [3,4], text: "Масштабирование и оптимизация: Масштабирование работающих гипотез и захват целевой аудитории\n\n24% от общего performance бюджета", reach: "Охват ЦА: 3.5-9млн" },
+      { q: [5,6], text: "Укрепление репутации через экспертизу: ретаргетинг, усиление позиций и максимизация эффективности каналов\n\n29% от общего performance бюджета", reach: "Охват ЦА: 4.5-10млн" },
+      { q: [7,8], text: "Возврат аудитории и закрепление бренда: закрепление Top-of-Mind, формирование гипотез и медиаплана на Q1 нового периода\n\n29% от общего performance бюджета", reach: "Охват ЦА: 4.5-10млн" }
     ]},
     // Events cell boundaries re-derived from a 300dpi pixel measurement of the
     // p.1 overview grid against the Q1-8/FIN column markers: the standard 4
@@ -2123,6 +2143,7 @@ body.gate-locked #pwGate { display: flex; }
   var calSideImg = document.getElementById("calSideImg");
   var calSideThumbLabel = document.getElementById("calSideThumbLabel");
   var calRubricsLbl = document.getElementById("calRubricsLbl");
+  var calSidePlaceholderDefault = calSidePlaceholder.innerHTML;
   var calRefs = document.getElementById("calRefs");
   var calRefsList = document.getElementById("calRefsList");
 
@@ -2200,7 +2221,7 @@ body.gate-locked #pwGate { display: flex; }
   // then specific substrings (e.g. "Archi.ru", "TATLIN") named in cell.links
   // are wrapped in real <a> anchors opening in a new tab.
   function renderBodyHtml(text, links) {
-    var html = escapeHtml(text);
+    var html = escapeHtml(text).replace(/\n/g, "<br><br>");
     if (links) {
       links.forEach(function (l) {
         var esc = escapeHtml(l.text);
@@ -2250,7 +2271,6 @@ body.gate-locked #pwGate { display: flex; }
     calModalQr.textContent = qLabel(cell.q);
     calModalBody.innerHTML = cell.empty ? "Контент для этого периода пока не определён." : renderBodyHtml(cell.text, cell.links);
     calModalBody.classList.toggle("is-empty", !!cell.empty);
-    calRubricsLbl.textContent = chan.rubricsLabel || "Рубрики";
     if (!cell.empty && cell.refs && cell.refs.length) {
       calRefsList.innerHTML = "";
       cell.refs.forEach(function (ref) {
@@ -2271,6 +2291,21 @@ body.gate-locked #pwGate { display: flex; }
     curRubric = -1;
     calSide.classList.remove("filled");
     calRubricList.innerHTML = "";
+    calSidePlaceholder.innerHTML = calSidePlaceholderDefault;
+
+    // Cells that carry a plain `reach` note (currently only Performance) skip
+    // the whole rubric-pill system entirely: no clickable list, the rubrics
+    // label slot shows the note as static text instead, and the side panel
+    // stays fully blank (no placeholder prompt) since there is nothing to click.
+    if (!cell.empty && cell.reach) {
+      calRubricsLbl.textContent = cell.reach;
+      calSidePlaceholder.innerHTML = "";
+      calPrev.disabled = curCell === 0;
+      calNext.disabled = curCell === chan.cells.length - 1;
+      return;
+    }
+
+    calRubricsLbl.textContent = chan.rubricsLabel || "Рубрики";
     // Channels with real content (currently TG) carry a cell.rubrics array of
     // { name, desc, img? } objects; every other channel/cell falls back to the
     // generic Рубрика 1/2/3 stubs, unchanged from before.
